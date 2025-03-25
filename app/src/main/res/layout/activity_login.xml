@@ -72,10 +72,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:background="@drawable/btnlogin"
             android:text="@string/user_login"
             android:textColor="@color/colorWhite"
-            android:textSize="20sp"
-            android:background="@drawable/btnlogin" />
+            android:textColorLink="#FA0000"
+            android:textSize="20sp" />
     </LinearLayout>
 
 </LinearLayout>
