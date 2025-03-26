@@ -84,7 +84,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:id="@+id/userEmailAddressWrapper">
+            android:id="@+id/userEmailWrapper">
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:layout_width="match_parent"
@@ -106,7 +106,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:id="@+id/passwordWrapper">
+                android:id="@+id/userPasswordWrapper">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -122,7 +122,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:id="@+id/confPasswordWrapper">
+                android:id="@+id/userConfPasswordWrapper">
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:layout_width="match_parent"
@@ -139,12 +139,12 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/contactNoWrapper">
+            android:id="@+id/userContactNoWrapper">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/contactNumber"
+                android:id="@+id/userContactNumber"
                 android:hint="@string/contact_number"
                 android:inputType="phone"
                 android:textColor="@color/colorRed"
