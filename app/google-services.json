@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "91272903163",
+    "project_id": "locallim-896c2",
+    "storage_bucket": "locallim-896c2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:91272903163:android:ffe8228ff2508505b7735e",
+        "android_client_info": {
+          "package_name": "com.example.locallim"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDatTHZqj0yRbtCyRzS_-pE38nZ7jGZ2YM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

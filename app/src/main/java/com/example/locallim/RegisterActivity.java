@@ -1,12 +1,20 @@
 package com.example.locallim;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -15,10 +23,14 @@ public class RegisterActivity extends AppCompatActivity {
     Button btnRegister;
     TextInputLayout userFirstNameWrapper, userLastNameWrapper, userEmailWrapper, userPasswordWrapper, userConfPasswordWrapper, userContactNoWrapper;
 
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        mAuth = FirebaseAuth.getInstance();
 
         // Initialize views
         uFirstName = findViewById(R.id.userFirstName);
@@ -38,53 +50,84 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister = findViewById(R.id.btnRegister);
 
         // Handle the register button click
-        btnRegister.setOnClickListener(view -> {
-            // Retrieve the input values
-            String firstName = uFirstName.getText().toString().trim();
-            String lastName = uLastName.getText().toString().trim();
-            String email = uEmail.getText().toString().trim();
-            String password = uPassword.getText().toString().trim();
-            String confPassword = uConfPassword.getText().toString().trim();
-            String contactNo = uContactNo.getText().toString().trim();
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String firstName = uFirstName.getText().toString().trim();
+                String lastName = uLastName.getText().toString().trim();
+                String email = uEmail.getText().toString().trim();
+                String password = uPassword.getText().toString().trim();
+                String confPassword = uConfPassword.getText().toString().trim();
+                String contactNo = uContactNo.getText().toString().trim();
 
-            // Validate the inputs
-            if (firstName.isEmpty()) {
-                userFirstNameWrapper.setError("First name is required");
-                userFirstNameWrapper.requestFocus();
-                return;
-            }
-            if (lastName.isEmpty()) {
-                userLastNameWrapper.setError("Last name is required");
-                userLastNameWrapper.requestFocus();
-                return;
-            }
-            if (email.isEmpty()) {
-                userEmailWrapper.setError("Email is required");
-                userEmailWrapper.requestFocus();
-                return;
-            }
-            if (password.isEmpty()) {
-                userPasswordWrapper.setError("Password is required");
-                userPasswordWrapper.requestFocus();
-                return;
-            }
-            if (confPassword.isEmpty()) {
-                userConfPasswordWrapper.setError("Confirm password is required");
-                userConfPasswordWrapper.requestFocus();
-                return;
-            }
-            if (contactNo.isEmpty()) {
-                userContactNoWrapper.setError("Contact number is required");
-                userContactNoWrapper.requestFocus();
-                return;
-            }
-            if (!password.equals(confPassword)) {
-                userConfPasswordWrapper.setError("Password does not match");
-                userConfPasswordWrapper.requestFocus();
-                return;
-            }
+                // Validate the inputs
+                if (firstName.isEmpty()) {
+                    userFirstNameWrapper.setError("First name is required");
+                    userFirstNameWrapper.requestFocus();
+                    return;
+                }
+                if (lastName.isEmpty()) {
+                    userLastNameWrapper.setError("Last name is required");
+                    userLastNameWrapper.requestFocus();
+                    return;
+                }
+                if (email.isEmpty()) {
+                    userEmailWrapper.setError("Email is required");
+                    userEmailWrapper.requestFocus();
+                    return;
+                }
+                if (password.isEmpty()) {
+                    userPasswordWrapper.setError("Password is required");
+                    userPasswordWrapper.requestFocus();
+                    return;
+                }
+                if (confPassword.isEmpty()) {
+                    userConfPasswordWrapper.setError("Confirm password is required");
+                    userConfPasswordWrapper.requestFocus();
+                    return;
+                }
+                if (contactNo.isEmpty()) {
+                    userContactNoWrapper.setError("Contact number is required");
+                    userContactNoWrapper.requestFocus();
+                    return;
+                }
+                if (!password.equals(confPassword)) {
+                    userConfPasswordWrapper.setError("Password does not match");
+                    userConfPasswordWrapper.requestFocus();
+                    return;
+                }
 
-            // If all validations pass, proceed with registration
+                // Create the user in Firebase Authentication
+                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Add additional user info to Firebase Database
+                            User user = new User(firstName, lastName, email, contactNo);
+                            FirebaseDatabase.getInstance().getReference("Users")
+                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Toast.makeText(RegisterActivity.this, "User has been registered successfully", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Toast.makeText(RegisterActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                        } else {
+                            Exception exception = task.getException();
+                            if (exception != null) {
+                                Log.e("Registration", "Failed: " + exception.getMessage());
+                                Toast.makeText(RegisterActivity.this, "Registration Failed: " + exception.getMessage(), Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(RegisterActivity.this, "Registration Failed", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                });
+            }
         });
     }
 }
