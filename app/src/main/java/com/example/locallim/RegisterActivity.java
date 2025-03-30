@@ -49,7 +49,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         btnRegister = findViewById(R.id.btnRegister);
 
-        // Handle the register button click
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,7 +96,6 @@ public class RegisterActivity extends AppCompatActivity {
                     return;
                 }
 
-                // Create the user in Firebase Authentication
                 mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -110,19 +108,21 @@ public class RegisterActivity extends AppCompatActivity {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
+                                                // Registration successful, show success message
                                                 Toast.makeText(RegisterActivity.this, "User has been registered successfully", Toast.LENGTH_SHORT).show();
                                             } else {
-                                                Toast.makeText(RegisterActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                                // Handle any issues with saving additional info in the database
+                                                Toast.makeText(RegisterActivity.this, "Error saving user info: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     });
                         } else {
+                            // Registration failed, show error message
                             Exception exception = task.getException();
                             if (exception != null) {
-                                Log.e("Registration", "Failed: " + exception.getMessage());
                                 Toast.makeText(RegisterActivity.this, "Registration Failed: " + exception.getMessage(), Toast.LENGTH_LONG).show();
                             } else {
-                                Toast.makeText(RegisterActivity.this, "Registration Failed", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterActivity.this, "Registration Failed: Unknown error", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
