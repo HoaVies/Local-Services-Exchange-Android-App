@@ -1,5 +1,6 @@
 package com.example.locallim;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -109,7 +110,9 @@ public class RegisterActivity extends AppCompatActivity {
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
                                                 // Registration successful, show success message
-                                                Toast.makeText(RegisterActivity.this, "User has been registered successfully", Toast.LENGTH_SHORT).show();
+                                                 Toast.makeText(RegisterActivity.this, "User has been registered successfully", Toast.LENGTH_SHORT).show();
+                                                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                                                startActivity(intent);
                                             } else {
                                                 // Handle any issues with saving additional info in the database
                                                 Toast.makeText(RegisterActivity.this, "Error saving user info: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
