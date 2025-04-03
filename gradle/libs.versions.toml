@@ -1,5 +1,6 @@
 [versions]
 agp = "8.9.1"
+cardview = "1.0.0"
 firebaseBom = "33.12.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -9,11 +10,17 @@ material = "1.12.0"
 activity = "1.10.1"
 constraintlayout = "2.2.1"
 design = "28.0.0"
+cardviewV7 = "28.0.0"
+picasso = "3.0.1"
+picassoVersion = "2.8"
+recyclerview = "1.4.0"
 
 [libraries]
+cardview = { module = "androidx.cardview:cardview", version.ref = "cardview" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-database = { module = "com.google.firebase:firebase-database" }
+firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
 google-firebase-database = { module = "com.google.firebase:firebase-database" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -23,6 +30,10 @@ material = { group = "com.google.android.material", name = "material", version.r
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 design = { group = "com.android.support", name = "design", version.ref = "design" }
+cardview-v7 = { group = "com.android.support", name = "cardview-v7", version.ref = "cardviewV7" }
+picasso = { module = "com.squareup.picasso:picasso", version.ref = "picasso" }
+picasso-v28 = { module = "com.squareup.picasso:picasso", version.ref = "picassoVersion" }
+recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
