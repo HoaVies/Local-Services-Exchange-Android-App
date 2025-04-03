@@ -53,13 +53,11 @@ public class BannerActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
 
-        // Replace LinearLayoutManager with GridLayoutManager
         int numberOfColumns = 2; // Change this to adjust number of columns
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
 
         mServices = new ArrayList<>();
 
-        // Using Firestore instead of Realtime Database
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("services")
                 .get()
@@ -82,7 +80,7 @@ public class BannerActivity extends AppCompatActivity {
                         mRecyclerView.setAdapter(mAdapter);
 
                         if (count == 0) {
-                            System.out.println("No services found in Firestore");
+                            System.out.println("No services found in Firestone");
                             Toast.makeText(BannerActivity.this, "No services found", Toast.LENGTH_SHORT).show();
                         }
                     } else {

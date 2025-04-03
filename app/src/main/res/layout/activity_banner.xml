@@ -12,7 +12,7 @@
     <ViewFlipper
         android:id="@+id/imgBanner"
         android:layout_width="match_parent"
-        android:layout_height="400dp" />
+        android:layout_height="250dp" />
 
     <!-- ScrollView containing TextView and RecyclerView -->
     <ScrollView
