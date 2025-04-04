@@ -15,7 +15,7 @@ picasso = "3.0.1"
 picassoVersion = "2.8"
 recyclerview = "1.4.0"
 firebaseStorage = "21.0.1"
-
+glide = "4.16.0"
 [libraries]
 cardview = { module = "androidx.cardview:cardview", version.ref = "cardview" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
@@ -36,7 +36,7 @@ picasso = { module = "com.squareup.picasso:picasso", version.ref = "picasso" }
 picasso-v28 = { module = "com.squareup.picasso:picasso", version.ref = "picassoVersion" }
 recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
-
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 

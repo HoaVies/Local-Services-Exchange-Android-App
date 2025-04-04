@@ -48,4 +48,5 @@ dependencies {
     implementation(libs.cardview)
     implementation(libs.picasso.v28)
     implementation(libs.firebase.firestore)
+    implementation(libs.glide)
 }

@@ -14,8 +14,10 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -23,7 +25,9 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -34,9 +38,10 @@ public class AddServiceActivity extends AppCompatActivity {
     private ImageView serviceImageView;
     private TextInputEditText titleEditText, locationEditText, specificLocationEditText,
             authorEditText, telephoneEditText, descriptionEditText;
-    private Button selectImageButton, saveServiceButton;
+    private Button selectImageButton, saveServiceButton, selectAppImageButton;
 
     private Uri imageUri;
+    private Bitmap selectedBitmap;
     private FirebaseFirestore db;
     private FirebaseStorage storage;
     private ProgressDialog progressDialog;
@@ -57,10 +62,11 @@ public class AddServiceActivity extends AppCompatActivity {
         telephoneEditText = findViewById(R.id.et_telephone);
         descriptionEditText = findViewById(R.id.et_description);
         selectImageButton = findViewById(R.id.btn_select_image);
+        selectAppImageButton = findViewById(R.id.btn_select_app_image);
         saveServiceButton = findViewById(R.id.btn_save_service);
 
-        // Set click listeners
         selectImageButton.setOnClickListener(v -> openImagePicker());
+        selectAppImageButton.setOnClickListener(v -> loadCloudImages());
         saveServiceButton.setOnClickListener(v -> validateAndSaveService());
     }
 
@@ -71,15 +77,133 @@ public class AddServiceActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST);
     }
 
+    // Method to fetch images from Firebase storage
+    private void loadCloudImages() {
+        // Show loading dialog
+        ProgressDialog loadingDialog = new ProgressDialog(this);
+        loadingDialog.setMessage("Loading available images...");
+        loadingDialog.setCancelable(false);
+        loadingDialog.show();
+
+        // Reference to your storage images
+        StorageReference imagesRef = storage.getReference().child("selectable_images");
+
+        // List all items in the folder
+        imagesRef.listAll()
+                .addOnSuccessListener(listResult -> {
+                    loadingDialog.dismiss();
+
+                    if (listResult.getItems().isEmpty()) {
+                        // If no images found, show message and use fallback to built-in images
+                        Toast.makeText(this, "No cloud images available, showing built-in images",
+                                Toast.LENGTH_SHORT).show();
+                        showBuiltInImageDialog();
+                        return;
+                    }
+
+                    // Prepare lists for dialog
+                    final List<StorageReference> imageRefs = new ArrayList<>();
+                    final List<String> imageNames = new ArrayList<>();
+
+                    // Add each image to our lists
+                    for (StorageReference item : listResult.getItems()) {
+                        imageRefs.add(item);
+                        // Use filename as display name
+                        String filename = item.getName();
+                        imageNames.add(filename);
+                    }
+
+                    // Show selection dialog
+                    showCloudImageSelectionDialog(imageRefs, imageNames);
+                })
+                .addOnFailureListener(e -> {
+                    loadingDialog.dismiss();
+                    Toast.makeText(this, "Failed to load cloud images: " + e.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                    // Fallback to built-in images
+                    showBuiltInImageDialog();
+                });
+    }
+
+    private void showCloudImageSelectionDialog(List<StorageReference> imageRefs, List<String> imageNames) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select Cloud Image");
+
+        // Convert to array for dialog
+        String[] nameArray = imageNames.toArray(new String[0]);
+
+        builder.setItems(nameArray, (dialog, which) -> {
+            // Show loading spinner
+            ProgressDialog loadingDialog = new ProgressDialog(this);
+            loadingDialog.setMessage("Loading image...");
+            loadingDialog.setCancelable(false);
+            loadingDialog.show();
+
+            // Get the URL for the selected image
+            imageRefs.get(which).getDownloadUrl()
+                    .addOnSuccessListener(uri -> {
+
+                        imageUri = uri;
+                        selectedBitmap = null;
+
+                        // Load the image
+                        Glide.with(this)
+                                .load(uri)
+                                .into(serviceImageView);
+
+                        loadingDialog.dismiss();
+                    })
+                    .addOnFailureListener(e -> {
+                        loadingDialog.dismiss();
+                        Toast.makeText(this, "Failed to load image: " + e.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    });
+        });
+
+        builder.show();
+    }
+
+    // Fallback method to select built-in images
+    private void showBuiltInImageDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select Built-in Image");
+
+        // Add your built-in images to the drawable folder first
+        final int[] imageResources = {
+                R.drawable.img_placeholder,
+                R.drawable.banner1,
+                R.drawable.banner2,
+                R.drawable.banner3
+        };
+
+        final String[] imageNames = {
+                "Placeholder Image",
+                "Banner Image 1",
+                "Banner Image 2",
+                "Banner Image 3"
+        };
+
+        builder.setItems(imageNames, (dialog, which) -> {
+            // Use BitmapFactory to decode the resource into a Bitmap
+            selectedBitmap = BitmapFactory.decodeResource(getResources(), imageResources[which]);
+
+            serviceImageView.setImageBitmap(selectedBitmap);
+            imageUri = null;
+        });
+
+        builder.show();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             imageUri = data.getData();
+            selectedBitmap = null;
 
             try {
-                // Convert to bitmap using BitmapFactory
+                // Convert to bitmap using MediaStore for display in ImageView
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
                 serviceImageView.setImageBitmap(bitmap);
             } catch (IOException e) {
@@ -90,7 +214,7 @@ public class AddServiceActivity extends AppCompatActivity {
     }
 
     private void validateAndSaveService() {
-
+        // Get text values
         String title = titleEditText.getText().toString().trim();
         String location = locationEditText.getText().toString().trim();
         String specificLocation = specificLocationEditText.getText().toString().trim();
@@ -98,6 +222,7 @@ public class AddServiceActivity extends AppCompatActivity {
         String telephone = telephoneEditText.getText().toString().trim();
         String description = descriptionEditText.getText().toString().trim();
 
+        // Validate inputs
         if (title.isEmpty()) {
             titleEditText.setError("Title is required");
             return;
@@ -108,18 +233,25 @@ public class AddServiceActivity extends AppCompatActivity {
             return;
         }
 
-        if (imageUri == null) {
+        // Check if either imageUri OR selectedBitmap is available
+        if (imageUri == null && selectedBitmap == null) {
             Toast.makeText(this, "Please select an image", Toast.LENGTH_SHORT).show();
             return;
         }
 
-
+        // Show progress dialog
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Uploading service...");
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        // Upload image to Firebase Storage
+        // If the imageUri is from Firebase Storage
+        if (imageUri != null && imageUri.toString().startsWith("https://firebasestorage.googleapis.com")) {
+            // Skip upload and use existing URL
+            saveServiceToFirestore(title, location, specificLocation, author, telephone, description, imageUri.toString());
+            return;
+        }
+
         uploadImage(title, location, specificLocation, author, telephone, description);
     }
 
@@ -130,15 +262,19 @@ public class AddServiceActivity extends AppCompatActivity {
         StorageReference storageRef = storage.getReference().child("service_images/" + filename);
 
         try {
+            Bitmap bitmap;
 
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+            if (imageUri != null) {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+            } else {
+                bitmap = selectedBitmap;
+            }
 
-            // Compress bitmap
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 75, baos);
             byte[] data = baos.toByteArray();
 
-            // Upload the compressed image
+            // Upload image
             storageRef.putBytes(data)
                     .addOnSuccessListener(taskSnapshot -> {
                         // Get the download URL
@@ -173,6 +309,7 @@ public class AddServiceActivity extends AppCompatActivity {
         serviceData.put("service_description", description);
         serviceData.put("service_image", imageUrl);
 
+        // Store the user ID
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             serviceData.put("user_id", currentUser.getUid());
