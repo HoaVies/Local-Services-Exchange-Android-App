@@ -1,5 +1,6 @@
 package com.example.locallim;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -8,9 +9,9 @@ import android.widget.ViewFlipper;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -22,31 +23,47 @@ public class BannerActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private ServiceListAdapter mAdapter;
     private List<ServiceListActivity> mServices;
+    private FloatingActionButton fabAddService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_banner);
-        imgBanner=findViewById(R.id.imgBanner);
+        imgBanner = findViewById(R.id.imgBanner);
+        fabAddService = findViewById(R.id.fab_add_service);
 
-        int sliders[]={
+        int sliders[] = {
                 R.drawable.banner1, R.drawable.banner2, R.drawable.banner3
         };
-        for (int image:sliders){
+        for (int image : sliders) {
             bannerFlipper(image);
         }
+
+        // Set click listener for FAB
+        fabAddService.setOnClickListener(view -> {
+            Intent intent = new Intent(BannerActivity.this, AddServiceActivity.class);
+            startActivity(intent);
+        });
+
+        showListServices();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh the services list when returning to this activity
         showListServices();
     }
 
     public void bannerFlipper(int image){
-        ImageView imageView=new ImageView(this);
+        ImageView imageView = new ImageView(this);
         imageView.setImageResource(image);
         imgBanner.addView(imageView);
         imgBanner.setFlipInterval(6000);
         imgBanner.setAutoStart(true);
-        imgBanner.setInAnimation(this,android.R.anim.fade_in);
-        imgBanner.setOutAnimation(this,android.R.anim.fade_out);
+        imgBanner.setInAnimation(this, android.R.anim.fade_in);
+        imgBanner.setOutAnimation(this, android.R.anim.fade_out);
     }
 
     public void showListServices(){
@@ -74,7 +91,7 @@ public class BannerActivity extends AppCompatActivity {
                                     ", Image URL: " + service.getService_image());
                         }
 
-                        System.out.println("Loaded " + count + " services from Firestore");
+                        System.out.println("Loaded " + count + " services from Firestone");
 
                         mAdapter = new ServiceListAdapter(BannerActivity.this, mServices);
                         mRecyclerView.setAdapter(mAdapter);

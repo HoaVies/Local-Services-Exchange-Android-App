@@ -22,4 +22,11 @@
     <string name="location_city">Location: City</string>
     <string name="author">Author:</string>
     <string name="service_title">Service Title</string>
+    <string name="add_new_service">Add New Service</string>
+    <string name="select_image_from_gallery">Select Image from Gallery</string>
+    <string name="location">Location</string>
+    <string name="specific_address">Specific Address</string>
+    <string name="telephone_number">Telephone Number</string>
+    <string name="description">Description</string>
+    <string name="save_service">Save Service</string>
 </resources>

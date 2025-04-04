@@ -14,6 +14,7 @@ cardviewV7 = "28.0.0"
 picasso = "3.0.1"
 picassoVersion = "2.8"
 recyclerview = "1.4.0"
+firebaseStorage = "21.0.1"
 
 [libraries]
 cardview = { module = "androidx.cardview:cardview", version.ref = "cardview" }
@@ -34,6 +35,7 @@ cardview-v7 = { group = "com.android.support", name = "cardview-v7", version.ref
 picasso = { module = "com.squareup.picasso:picasso", version.ref = "picasso" }
 picasso-v28 = { module = "com.squareup.picasso:picasso", version.ref = "picassoVersion" }
 recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
+firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
