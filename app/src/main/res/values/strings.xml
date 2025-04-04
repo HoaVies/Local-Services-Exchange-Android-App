@@ -37,4 +37,6 @@
     <string name="profile">Profile</string>
     <string name="user_profile">User profile</string>
     <string name="user_name">User Name</string>
+    <string name="remember_me">Remember Me</string>
+    <string name="forgot_password">Forgot Password?</string>
 </resources>
