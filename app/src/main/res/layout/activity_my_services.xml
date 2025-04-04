@@ -44,6 +44,6 @@
         android:layout_marginBottom="72dp"
         android:contentDescription="@string/add_service"
         android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="@color/colorDarkRed" />
+        app:backgroundTint="@color/colorOrange" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
