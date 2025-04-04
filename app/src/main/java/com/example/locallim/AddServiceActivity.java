@@ -79,7 +79,7 @@ public class AddServiceActivity extends AppCompatActivity {
             imageUri = data.getData();
 
             try {
-                // Convert to bitmap using BitmapFactory for display in ImageView
+                // Convert to bitmap using BitmapFactory
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
                 serviceImageView.setImageBitmap(bitmap);
             } catch (IOException e) {
@@ -90,7 +90,7 @@ public class AddServiceActivity extends AppCompatActivity {
     }
 
     private void validateAndSaveService() {
-        // Get text values
+
         String title = titleEditText.getText().toString().trim();
         String location = locationEditText.getText().toString().trim();
         String specificLocation = specificLocationEditText.getText().toString().trim();
@@ -98,7 +98,6 @@ public class AddServiceActivity extends AppCompatActivity {
         String telephone = telephoneEditText.getText().toString().trim();
         String description = descriptionEditText.getText().toString().trim();
 
-        // Validate inputs
         if (title.isEmpty()) {
             titleEditText.setError("Title is required");
             return;
@@ -114,7 +113,7 @@ public class AddServiceActivity extends AppCompatActivity {
             return;
         }
 
-        // Show progress dialog
+
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Uploading service...");
         progressDialog.setCancelable(false);
@@ -134,7 +133,7 @@ public class AddServiceActivity extends AppCompatActivity {
 
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
 
-            // Compress bitmap to reduce file size
+            // Compress bitmap
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 75, baos);
             byte[] data = baos.toByteArray();
@@ -174,20 +173,18 @@ public class AddServiceActivity extends AppCompatActivity {
         serviceData.put("service_description", description);
         serviceData.put("service_image", imageUrl);
 
-        // Store the user ID of the service creator
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             serviceData.put("user_id", currentUser.getUid());
         }
 
-        // Add to Firestore
         db.collection("services")
                 .add(serviceData)
                 .addOnSuccessListener(documentReference -> {
                     progressDialog.dismiss();
                     Toast.makeText(AddServiceActivity.this, "Service added successfully",
                             Toast.LENGTH_SHORT).show();
-                    finish(); // Close this activity and return to BannerActivity
+                    finish();
                 })
                 .addOnFailureListener(e -> {
                     progressDialog.dismiss();

@@ -48,10 +48,8 @@ public class BannerActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Initialize RecyclerView
         initRecyclerView();
 
-        // Do first load of services
         showListServices();
 
         setupBottomNavigation();
@@ -61,15 +59,10 @@ public class BannerActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // Only refresh the services list if we've already done the initial load
-        // This prevents double loading when the activity is first created
         if (initialLoadDone) {
             showListServices();
         }
     }
-
-    /**
-     * Initialize RecyclerView and its layout manager
-     */
     private void initRecyclerView() {
         mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
@@ -94,7 +87,6 @@ public class BannerActivity extends AppCompatActivity {
     }
 
     public void showListServices(){
-        // Clear existing services to prevent duplication
         mServices.clear();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();

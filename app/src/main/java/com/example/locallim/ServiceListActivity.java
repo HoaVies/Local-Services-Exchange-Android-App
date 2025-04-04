@@ -11,7 +11,6 @@ public class ServiceListActivity {
     private String id;
     private String user_id;
 
-    // No-arg constructor needed for Firestore
     public ServiceListActivity() {
     }
 

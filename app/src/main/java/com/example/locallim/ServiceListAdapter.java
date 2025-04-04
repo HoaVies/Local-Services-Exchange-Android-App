@@ -44,7 +44,6 @@ public class ServiceListAdapter extends RecyclerView.Adapter<ServiceListAdapter.
         };
     }
 
-    // Add these methods for cache management
     private void addBitmapToMemoryCache(String key, Bitmap bitmap) {
         if (getBitmapFromMemoryCache(key) == null) {
             memoryCache.put(key, bitmap);
@@ -73,7 +72,6 @@ public class ServiceListAdapter extends RecyclerView.Adapter<ServiceListAdapter.
         holder.serTitle.setText(serviceCur.getService_title());
         holder.serLocation.setText(serviceCur.getService_location());
 
-        // Set default placeholder image
         holder.serImage.setImageResource(R.drawable.img_placeholder);
 
         // Get image URL from Firestore
@@ -157,14 +155,12 @@ public class ServiceListAdapter extends RecyclerView.Adapter<ServiceListAdapter.
                 BitmapFactory.decodeStream(input, null, options);
                 input.close();
 
-                // Reopen the connection for actual bitmap decode
                 connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
                 input = connection.getInputStream();
 
-                // Calculate inSampleSize
-                int targetWidth = 240;  // ~120dp on an xxhdpi device
-                int targetHeight = 160; // ~80dp on an xxhdpi device
+                int targetWidth = 240;
+                int targetHeight = 160;
                 options.inSampleSize = calculateInSampleSize(options, targetWidth, targetHeight);
 
                 // Decode bitmap with inSampleSize set
@@ -175,7 +171,6 @@ public class ServiceListAdapter extends RecyclerView.Adapter<ServiceListAdapter.
                 input.close();
 
                 if (bitmap != null) {
-                    // Add to memory cache
                     addBitmapToMemoryCache(imageUrl, bitmap);
                 }
 
@@ -199,7 +194,7 @@ public class ServiceListAdapter extends RecyclerView.Adapter<ServiceListAdapter.
     }
 
     private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
+
         final int height = options.outHeight;
         final int width = options.outWidth;
         int inSampleSize = 1;
@@ -208,8 +203,6 @@ public class ServiceListAdapter extends RecyclerView.Adapter<ServiceListAdapter.
             final int halfHeight = height / 2;
             final int halfWidth = width / 2;
 
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
             while ((halfHeight / inSampleSize) >= reqHeight
                     && (halfWidth / inSampleSize) >= reqWidth) {
                 inSampleSize *= 2;

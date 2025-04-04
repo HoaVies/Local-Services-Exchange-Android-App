@@ -2,8 +2,7 @@ package com.example.locallim;
 
 public class User {
     private String firstName, lastName, email, contactNo;
-    
-    // Default constructor required for Firebase
+
     public User() {
     }
 
@@ -14,7 +13,6 @@ public class User {
         this.contactNo = contactNo;
     }
 
-    // Getters and setters
     public String getFirstName() {
         return firstName;
     }

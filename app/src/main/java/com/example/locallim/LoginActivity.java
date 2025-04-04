@@ -53,20 +53,16 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
-                // Firebase authentication attempt
                 mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Login successful
                             Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
 
-                            // Navigate to the ServiceActivity
                             Intent intent = new Intent(LoginActivity.this, BannerActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
                         } else {
-                            // Login failed, show the error message
                             String errorMessage = task.getException() != null ? task.getException().getMessage() : "Unknown error occurred";
                             Toast.makeText(LoginActivity.this, "Login Failed: " + errorMessage, Toast.LENGTH_SHORT).show();
                         }

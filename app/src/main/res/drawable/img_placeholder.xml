@@ -8,13 +8,12 @@
         </shape>
     </item>
 
-    <!-- Image icon in the center (Ensure this image exists in the drawable folder) -->
     <item android:gravity="center">
         <bitmap
             android:src="@drawable/placeholder"
-        android:gravity="center"
-        android:width="40dp"
-        android:height="40dp" />
-    </item>
+            android:gravity="center"
+            android:width="40dp"
+            android:height="40dp" />
+        </item>
 
 </layer-list>

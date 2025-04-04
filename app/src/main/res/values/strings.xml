@@ -31,6 +31,10 @@
     <string name="save_service">Save Service</string>
     <string name="add_service">Add Service</string>
     <string name="service">Service</string>
-    <string name="my_services">My Services</string>
+    <string name="my_services">My Service</string>
     <string name="delete">Delete</string>
+    <string name="home">Home</string>
+    <string name="profile">Profile</string>
+    <string name="user_profile">User profile</string>
+    <string name="user_name">User Name</string>
 </resources>
