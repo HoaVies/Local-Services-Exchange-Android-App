@@ -1,36 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main"
+    android:fillViewport="true"
+    android:id="@+id/main_scroll"
     tools:context=".MainActivity">
 
-    <ImageView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/background"
-        android:scaleType="centerCrop"
-        android:contentDescription="@null" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="10sp"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:id="@+id/main">
 
         <ImageView
+            android:id="@+id/backgroundImageView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:src="@drawable/background"
+            android:scaleType="centerCrop"
+            android:contentDescription="@null"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:id="@+id/logoImageView"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="80sp"
-            android:src="@drawable/uni_logo" />
+            android:layout_marginTop="48dp"
+            android:src="@drawable/uni_logo"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/introTextView"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="80sp"
+            android:layout_marginTop="48dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:shadowColor="#FFFFFF"
             android:shadowDx="1"
             android:shadowDy="1"
@@ -40,30 +51,46 @@
             android:textAllCaps="true"
             android:textColor="@color/colorPrimary"
             android:textSize="22sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/logoImageView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <Button
             android:id="@+id/btnUserLogin"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="80sp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="164dp"
+            android:layout_marginEnd="16dp"
             android:background="@drawable/btnlogin"
-            app:backgroundTint="@color/colorOrange"
             android:text="@string/btn_login"
             android:textColor="@color/colorWhite"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            app:backgroundTint="@color/colorOrange"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/introTextView" />
 
         <Button
             android:id="@+id/btnUserSignup"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10sp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="32dp"
             android:background="@drawable/btnsignup"
-            app:backgroundTint="@color/colorOrange"
             android:text="@string/btn_user_signup"
             android:textColor="@color/colorWhite"
-            android:textSize="20sp" />
-
-    </LinearLayout>
-
-</FrameLayout>
+            android:textSize="20sp"
+            app:backgroundTint="@color/colorOrange"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnUserLogin"
+            app:layout_constraintVertical_bias="0.114" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
