@@ -14,9 +14,9 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="contact_number">Contact Number</string>
     <string name="btn_register">Register</string>
-    <string name="popular_services">Popular Services</string>
+    <string name="available_service">Available Services:</string>
     <string name="browser_category">Browser Category</string>
-    <string name="service_description_goes_here_this_is_a_detailed_description_of_the_service">Service description goes here. This is a detailed description of the service.</string>
+    <string name="service_descript">This is a detailed description of the service.</string>
     <string name="tel">Tel:</string>
     <string name="address">Address:</string>
     <string name="location_city">Location: City</string>
@@ -29,4 +29,8 @@
     <string name="telephone_number">Telephone Number</string>
     <string name="description">Description</string>
     <string name="save_service">Save Service</string>
+    <string name="add_service">Add Service</string>
+    <string name="service">Service</string>
+    <string name="my_services">My Services</string>
+    <string name="delete">Delete</string>
 </resources>

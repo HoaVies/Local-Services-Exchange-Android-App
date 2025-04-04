@@ -1,5 +1,7 @@
 package com.example.locallim;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -171,6 +173,12 @@ public class AddServiceActivity extends AppCompatActivity {
         serviceData.put("service_telephone", telephone);
         serviceData.put("service_description", description);
         serviceData.put("service_image", imageUrl);
+
+        // Store the user ID of the service creator
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            serviceData.put("user_id", currentUser.getUid());
+        }
 
         // Add to Firestore
         db.collection("services")

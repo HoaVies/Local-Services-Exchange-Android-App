@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                android:text="Service"
+                android:text="@string/service"
                 android:textColor="@color/colorDarkRed"
                 android:id="@+id/serTitle" />
 
@@ -59,9 +59,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:layout_gravity="right"
-                    android:paddingRight="10dp"
+                    android:paddingEnd="10dp"
                     android:id="@+id/serLocation"
-                    android:text="Location"
+                    android:text="@string/location"
                     />
             </LinearLayout>
         </LinearLayout>

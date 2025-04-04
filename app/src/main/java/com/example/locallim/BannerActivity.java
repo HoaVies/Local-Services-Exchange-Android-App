@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -24,6 +25,7 @@ public class BannerActivity extends AppCompatActivity {
     private ServiceListAdapter mAdapter;
     private List<ServiceListActivity> mServices;
     private FloatingActionButton fabAddService;
+    private boolean initialLoadDone = false; // Track if initial load has occurred
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,14 +48,39 @@ public class BannerActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        // Initialize RecyclerView
+        initRecyclerView();
+
+        // Do first load of services
         showListServices();
+
+        setupBottomNavigation();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // Refresh the services list when returning to this activity
-        showListServices();
+        // Only refresh the services list if we've already done the initial load
+        // This prevents double loading when the activity is first created
+        if (initialLoadDone) {
+            showListServices();
+        }
+    }
+
+    /**
+     * Initialize RecyclerView and its layout manager
+     */
+    private void initRecyclerView() {
+        mRecyclerView = findViewById(R.id.recycler_view);
+        mRecyclerView.setHasFixedSize(true);
+
+        int numberOfColumns = 2; // Change this to adjust number of columns
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
+
+        // Initialize the list and adapter
+        mServices = new ArrayList<>();
+        mAdapter = new ServiceListAdapter(BannerActivity.this, mServices);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     public void bannerFlipper(int image){
@@ -67,13 +94,8 @@ public class BannerActivity extends AppCompatActivity {
     }
 
     public void showListServices(){
-        mRecyclerView = findViewById(R.id.recycler_view);
-        mRecyclerView.setHasFixedSize(true);
-
-        int numberOfColumns = 2; // Change this to adjust number of columns
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
-
-        mServices = new ArrayList<>();
+        // Clear existing services to prevent duplication
+        mServices.clear();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("services")
@@ -83,6 +105,7 @@ public class BannerActivity extends AppCompatActivity {
                         int count = 0;
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             ServiceListActivity service = document.toObject(ServiceListActivity.class);
+                            service.setId(document.getId()); // Store document ID
                             mServices.add(service);
                             count++;
 
@@ -93,8 +116,11 @@ public class BannerActivity extends AppCompatActivity {
 
                         System.out.println("Loaded " + count + " services from Firestone");
 
-                        mAdapter = new ServiceListAdapter(BannerActivity.this, mServices);
-                        mRecyclerView.setAdapter(mAdapter);
+                        // Notify adapter of data changes
+                        mAdapter.notifyDataSetChanged();
+
+                        // Set flag that initial load is complete
+                        initialLoadDone = true;
 
                         if (count == 0) {
                             System.out.println("No services found in Firestone");
@@ -105,5 +131,26 @@ public class BannerActivity extends AppCompatActivity {
                         Toast.makeText(BannerActivity.this, "Error loading services", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private void setupBottomNavigation() {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.nav_home);
+
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.nav_home) {
+                return true; // Already on home
+            } else if (itemId == R.id.nav_profile) {
+                startActivity(new Intent(this, ProfileActivity.class));
+                return true;
+            } else if (itemId == R.id.nav_my_services) {
+                startActivity(new Intent(this, MyServicesActivity.class));
+                return true;
+            }
+
+            return false;
+        });
     }
 }
