@@ -16,4 +16,10 @@
     <string name="btn_register">Register</string>
     <string name="popular_services">Popular Services</string>
     <string name="browser_category">Browser Category</string>
+    <string name="service_description_goes_here_this_is_a_detailed_description_of_the_service">Service description goes here. This is a detailed description of the service.</string>
+    <string name="tel">Tel:</string>
+    <string name="address">Address:</string>
+    <string name="location_city">Location: City</string>
+    <string name="author">Author:</string>
+    <string name="service_title">Service Title</string>
 </resources>

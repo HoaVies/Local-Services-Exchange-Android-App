@@ -15,6 +15,12 @@
         android:theme="@style/Theme.LocalLim"
         tools:targetApi="31">
         <activity
+            android:name=".ServiceDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ServiceDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".BannerActivity"
             android:exported="false" />
         <activity
