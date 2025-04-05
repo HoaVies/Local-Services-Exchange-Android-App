@@ -77,7 +77,6 @@ public class AddServiceActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent, "Select Image"), PICK_IMAGE_REQUEST);
     }
 
-    // Method to fetch images from Firebase storage
     private void loadCloudImages() {
         // Show loading dialog
         ProgressDialog loadingDialog = new ProgressDialog(this);
@@ -85,7 +84,6 @@ public class AddServiceActivity extends AppCompatActivity {
         loadingDialog.setCancelable(false);
         loadingDialog.show();
 
-        // Reference to your storage images
         StorageReference imagesRef = storage.getReference().child("selectable_images");
 
         // List all items in the folder
@@ -95,58 +93,57 @@ public class AddServiceActivity extends AppCompatActivity {
 
                     if (listResult.getItems().isEmpty()) {
                         // If no images found, show message and use fallback to built-in images
-                        Toast.makeText(this, "No cloud images available, showing built-in images",
+                        Toast.makeText(this, "No cloud images available, please upload your own image",
                                 Toast.LENGTH_SHORT).show();
-                        showBuiltInImageDialog();
                         return;
                     }
-
-                    // Prepare lists for dialog
+//
+//                    // Prepare lists for dialog
                     final List<StorageReference> imageRefs = new ArrayList<>();
                     final List<String> imageNames = new ArrayList<>();
 
-                    // Add each image to our lists
                     for (StorageReference item : listResult.getItems()) {
                         imageRefs.add(item);
-                        // Use filename as display name
+                        // Remove image extension
                         String filename = item.getName();
-                        imageNames.add(filename);
+                        String cleanName = removeFileExtension(filename);
+                        imageNames.add(cleanName);
                     }
 
-                    // Show selection dialog
                     showCloudImageSelectionDialog(imageRefs, imageNames);
                 })
                 .addOnFailureListener(e -> {
                     loadingDialog.dismiss();
-                    Toast.makeText(this, "Failed to load cloud images: " + e.getMessage(),
+                    Toast.makeText(this, "Failed to load cloud images, please upload your own image . Error: " + e.getMessage(),
                             Toast.LENGTH_SHORT).show();
-                    // Fallback to built-in images
-                    showBuiltInImageDialog();
                 });
+    }
+    private String removeFileExtension(String filename) {
+        int lastDotPosition = filename.lastIndexOf('.');
+        if (lastDotPosition > 0) {
+            return filename.substring(0, lastDotPosition);
+        }
+        return filename;
     }
 
     private void showCloudImageSelectionDialog(List<StorageReference> imageRefs, List<String> imageNames) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Select Cloud Image");
 
-        // Convert to array for dialog
         String[] nameArray = imageNames.toArray(new String[0]);
 
         builder.setItems(nameArray, (dialog, which) -> {
-            // Show loading spinner
             ProgressDialog loadingDialog = new ProgressDialog(this);
             loadingDialog.setMessage("Loading image...");
             loadingDialog.setCancelable(false);
             loadingDialog.show();
 
-            // Get the URL for the selected image
             imageRefs.get(which).getDownloadUrl()
                     .addOnSuccessListener(uri -> {
 
                         imageUri = uri;
                         selectedBitmap = null;
 
-                        // Load the image
                         Glide.with(this)
                                 .load(uri)
                                 .into(serviceImageView);
@@ -158,37 +155,6 @@ public class AddServiceActivity extends AppCompatActivity {
                         Toast.makeText(this, "Failed to load image: " + e.getMessage(),
                                 Toast.LENGTH_SHORT).show();
                     });
-        });
-
-        builder.show();
-    }
-
-    // Fallback method to select built-in images
-    private void showBuiltInImageDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Select Built-in Image");
-
-        // Add your built-in images to the drawable folder first
-        final int[] imageResources = {
-                R.drawable.img_placeholder,
-                R.drawable.banner1,
-                R.drawable.banner2,
-                R.drawable.banner3
-        };
-
-        final String[] imageNames = {
-                "Placeholder Image",
-                "Banner Image 1",
-                "Banner Image 2",
-                "Banner Image 3"
-        };
-
-        builder.setItems(imageNames, (dialog, which) -> {
-            // Use BitmapFactory to decode the resource into a Bitmap
-            selectedBitmap = BitmapFactory.decodeResource(getResources(), imageResources[which]);
-
-            serviceImageView.setImageBitmap(selectedBitmap);
-            imageUri = null;
         });
 
         builder.show();
@@ -214,7 +180,6 @@ public class AddServiceActivity extends AppCompatActivity {
     }
 
     private void validateAndSaveService() {
-        // Get text values
         String title = titleEditText.getText().toString().trim();
         String location = locationEditText.getText().toString().trim();
         String specificLocation = specificLocationEditText.getText().toString().trim();
@@ -277,7 +242,6 @@ public class AddServiceActivity extends AppCompatActivity {
             // Upload image
             storageRef.putBytes(data)
                     .addOnSuccessListener(taskSnapshot -> {
-                        // Get the download URL
                         storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                             // Save service data with image URL to Firestore
                             saveServiceToFirestore(title, location, specificLocation,
